@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.haulmont.thirdparty:poi:3.9.20130515">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/haulmont/thirdparty/poi/3.9.20130515/poi-3.9.20130515.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/com/haulmont/thirdparty/poi/3.9.20130515/poi-3.9.20130515-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/haulmont/thirdparty/poi/3.9.20130515/poi-3.9.20130515-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
