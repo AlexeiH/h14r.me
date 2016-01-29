@@ -48,6 +48,8 @@ public class XLSWorkLogDataProvider implements IWorkLogDataProvider {
 	
 	String dateFormat = configuration.getString("worklog.source.xls.dateFormat");
 	SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
+	
+	int skipLines = configuration.getInt("worklog.source.xls.skipFirstLines");
 	  
 	try {
 		HSSFWorkbook workbook = new HSSFWorkbook(this.inputStream);
@@ -56,7 +58,7 @@ public class XLSWorkLogDataProvider implements IWorkLogDataProvider {
 		
 		List<WorkLogEntry> workLogs = new ArrayList<WorkLogEntry>();
 		
-		for (int i = 1; i <= lastRowNum; i++) {
+		for (int i = (0 + skipLines); i <= lastRowNum; i++) {
 			HSSFRow row = sheet.getRow(i);
 			
 			HSSFCell issueKeyCell = row.getCell(idIndex);
