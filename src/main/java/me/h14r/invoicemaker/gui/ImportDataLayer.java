@@ -17,6 +17,8 @@ import java.io.File;
 
 public class ImportDataLayer extends HBox {
 
+  private Insets padding = new Insets(5, 5, 5, 5);
+
   private ActionProcessor actionProcessor;
 
   public ImportDataLayer(ActionProcessor actionProcessor) {
@@ -29,13 +31,12 @@ public class ImportDataLayer extends HBox {
     getChildren().add(vbox);
     setHgrow(vbox, Priority.ALWAYS);
 
-    //    setStyle("-fx-border-style: solid; -fx-border-width: 1; -fx-border-color: black;");
-    setPadding(new Insets(5, 5, 5, 5));
+    setPadding(padding);
   }
 
   private VBox createLeftVBox(){
     VBox vbox = new VBox(10);
-    vbox.setPadding(new Insets(5, 5, 5, 5));
+    vbox.setPadding(padding);
 
     Label label = new Label("File");
     label.setStyle("-fx-font-size: 12pt;");
@@ -54,14 +55,17 @@ public class ImportDataLayer extends HBox {
 
   private VBox createRightVBox(){
     VBox vbox = new VBox(10);
-    vbox.setPadding(new Insets(5, 5, 5, 5));
+    vbox.setPadding(padding);
 
+    HBox line = new HBox(10);
+    line.setAlignment(Pos.CENTER);
     Label label = new Label("JIRA");
     label.setStyle("-fx-font-size: 12pt;");
-    vbox.getChildren().add(label);
+    line.getChildren().add(label);
+    vbox.getChildren().add(line);
 
     //Add login label and text field
-    HBox line = new HBox(10);
+    line = new HBox(10);
     line.setAlignment(Pos.BOTTOM_RIGHT);
     label = new Label("Login");
     login = new TextField();
