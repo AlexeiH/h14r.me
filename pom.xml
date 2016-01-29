@@ -84,6 +84,7 @@
                 <configuration>
                     <vendor>Helmentrepreneur.Me</vendor>
                     <mainClass>me.h14r.invoicemaker.gui.MainApplication</mainClass>
+                    <!--<mainClass>me.h14r.invoicemaker.gui.TableViewSample</mainClass>-->
                 </configuration>
             </plugin>
         </plugins>
