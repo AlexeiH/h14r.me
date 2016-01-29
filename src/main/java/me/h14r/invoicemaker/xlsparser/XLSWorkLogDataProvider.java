@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -40,6 +41,10 @@ public class XLSWorkLogDataProvider implements IWorkLogDataProvider {
 	int descriptionIndex = configuration.getInt("worklog.source.xls.colIdx.description");
 	int idIndex = configuration.getInt("worklog.source.xls.colIdx.id");
 	int workLogIndex = configuration.getInt("worklog.source.xls.colIdx.workLog");
+	String[] workLogJIRAsArray = configuration.getString("worklog.source.xls.useWorkLogForIds")
+			.split(",");
+	List<String> workLogJIRAs = Arrays.asList(workLogJIRAsArray);
+	String ignorableJIRARegexp = configuration.getString("worklog.source.xls.ignoreWorkLogIds");
 	
 	String dateFormat = configuration.getString("worklog.source.xls.dateFormat");
 	SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
@@ -56,6 +61,9 @@ public class XLSWorkLogDataProvider implements IWorkLogDataProvider {
 			
 			HSSFCell issueKeyCell = row.getCell(idIndex);
 			String issueKey = issueKeyCell.getStringCellValue();
+			if (issueKey.matches(ignorableJIRARegexp)) {
+				continue;
+			}
 			
 			HSSFCell workLogCell = row.getCell(workLogIndex);
 			String workLog = workLogCell.getStringCellValue();
@@ -77,7 +85,9 @@ public class XLSWorkLogDataProvider implements IWorkLogDataProvider {
 				workLogEntry = new WorkLogEntry(formattedDate, issueKey, hours);
 				workLogs.add(workLogEntry);
 			} else if (GROUPING_KIND_JIRA.equals(groupingConfig)) { // use JIRA number as the key
-				// JIRA ID, 
+				// JIRA ID, description or worklog, hours
+				workLogEntry = new WorkLogEntry(issueKey, workLogJIRAs.contains(issueKey) ? workLog : description, hours);
+				workLogs.add(workLogEntry);
 			} else {
 				String incorrectGroupingMessage = MessageFormat
 						.format("Incorrect grouping kind configuration: {0}!", groupingConfig);
