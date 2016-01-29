@@ -1,9 +1,12 @@
 package me.h14r.invoicemaker.gui;
 
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -30,6 +33,9 @@ public class MainApplication extends Application {
   private TextField invoiceNo = new TextField();
   private DatePicker month = new DatePicker();
   private ImportDataLayer importDataLayer = new ImportDataLayer(new SourceActionProcessor());
+  private TextField hourRate = new TextField();
+  private TextField amount = new TextField();
+  private TextField hours = new TextField();
 
   public static void main(String[] args) throws Exception {
     launch(args);
@@ -40,8 +46,7 @@ public class MainApplication extends Application {
     Scene scene = new Scene(new Group());
     stage.setTitle("Helmentrepreneur.Me");
     stage.setWidth(800);
-    stage.setHeight(800);
-
+    stage.setHeight(900);
 
     HBox invoiceData = new HBox();
     Label invoiceNoLabel = new Label("InvoiceNo");
@@ -50,18 +55,33 @@ public class MainApplication extends Application {
     invoiceData.setSpacing(10);
     invoiceData.setPadding(new Insets(15, 12, 15, 12));
 
+    HBox amountCalc = new HBox();
+    Label amountLabel = new Label("Amount due");
+    Label hourRateLabel = new Label("Rate");
+    Label expectedHoursLabel = new Label("Expected Hours");
+    amount.textProperty().addListener(new HoursCalcListener());
+    hourRate.textProperty().addListener(new HoursCalcListener());
+    hours.setDisable(true);
+    amountCalc.getChildren().addAll(amountLabel, amount, hourRateLabel, hourRate, expectedHoursLabel, hours);
+    amountCalc.setSpacing(10);
+    amountCalc.setPadding(new Insets(15, 12, 15, 12));
+
     HBox toolbar = new HBox();
     final Button generateButton = new Button("Generate");
+    toolbar.setAlignment(Pos.CENTER_RIGHT);
+    toolbar.setPadding(new Insets(15, 0, 0, 0));
     generateButton.setOnAction(new EventHandler<ActionEvent>() {
       public void handle(ActionEvent e) {
         generateTemplate();
       }
     });
     toolbar.getChildren().addAll(generateButton);
+    toolbar.setSpacing(10);
+    toolbar.setPadding(new Insets(15, 12, 15, 12));
 
     VBox mainScene = new VBox();
     mainScene.setSpacing(5);
-    mainScene.getChildren().addAll(invoiceData, importDataLayer, table, toolbar);
+    mainScene.getChildren().addAll(invoiceData, amountCalc, importDataLayer, table, toolbar);
 
 
     ((Group) scene.getRoot()).getChildren().addAll(mainScene);
@@ -86,7 +106,8 @@ public class MainApplication extends Application {
         IWorkLogDataProvider workLogDataProvider = new XLSWorkLogDataProvider(ConfigurationProvider.getInstance(),
             new FileInputStream(selectedFile));
         List<WorkLogEntry> workLogs = workLogDataProvider.getWorkLogs();
-        table.setData(workLogs, new BigDecimal("400"));
+        BigDecimal expectedHoursBD = new BigDecimal(hours.getText());
+        table.setData(workLogs, expectedHoursBD);
       } catch (FileNotFoundException e) {
         e.printStackTrace();
       }
@@ -98,4 +119,19 @@ public class MainApplication extends Application {
 
     }
   }
+
+  private class HoursCalcListener implements ChangeListener<String> {
+
+    public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+      try {
+        BigDecimal amount = new BigDecimal(MainApplication.this.amount.getText());
+        BigDecimal rate = new BigDecimal(MainApplication.this.hourRate.getText());
+        if (amount != null && rate != null) {
+          MainApplication.this.hours.setText(amount.divideToIntegralValue(rate).toPlainString());
+        }
+      } catch (Exception e) {
+      }
+    }
+  }
+
 }
