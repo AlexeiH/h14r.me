@@ -1,17 +1,20 @@
 package me.h14r.invoicemaker.api;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 public class WorkLogEntry {
 
   private String key;
   private String workLog;
   private BigDecimal hours;
+  private Date workDate;
 
-  public WorkLogEntry(String key, String workLog, BigDecimal hours) {
+  public WorkLogEntry(String key, String workLog, BigDecimal hours, Date workDate) {
     this.key = key;
     this.workLog = workLog;
     this.hours = hours;
+    this.workDate = workDate;
   }
 
   public String getWorkLog() {
@@ -36,5 +39,13 @@ public class WorkLogEntry {
 
   public void setKey(String key) {
     this.key = key;
+  }
+
+  public Date getWorkDate() {
+	return workDate;
+  }
+	
+  public void setWorkDate(Date workDate) {
+	this.workDate = workDate;
   }
 }
