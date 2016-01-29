@@ -6,11 +6,13 @@ import java.util.Date;
 public class WorkLogEntry {
 
   private Date date;
+  private String key;
   private String workLog;
   private BigDecimal hours;
 
-  public WorkLogEntry(Date date, String workLog, BigDecimal hours) {
+  public WorkLogEntry(Date date, String key, String workLog, BigDecimal hours) {
     this.date = date;
+    this.key = key;
     this.workLog = workLog;
     this.hours = hours;
   }
@@ -37,5 +39,13 @@ public class WorkLogEntry {
 
   public void setHours(BigDecimal hours) {
     this.hours = hours;
+  }
+
+  public String getKey() {
+    return key;
+  }
+
+  public void setKey(String key) {
+    this.key = key;
   }
 }
