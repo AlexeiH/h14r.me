@@ -13,11 +13,15 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import me.h14r.invoicemaker.ConfigurationProvider;
+import me.h14r.invoicemaker.api.IWorkLogDataProvider;
 import me.h14r.invoicemaker.api.WorkLogEntry;
+import me.h14r.invoicemaker.xlsparser.XLSWorkLogDataProvider;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainApplication extends Application {
@@ -60,15 +64,6 @@ public class MainApplication extends Application {
     mainScene.getChildren().addAll(invoiceData, importDataLayer, table, toolbar);
 
 
-    List<WorkLogEntry> workLogs = new ArrayList<WorkLogEntry>();
-    for (int i = 0; i < 12; i++) {
-      workLogs.add(new WorkLogEntry("2015-12-01", "Desc1", new BigDecimal(8)));
-      workLogs.add(new WorkLogEntry("2015-12-02", "Desc2", new BigDecimal(6)));
-      workLogs.add(new WorkLogEntry("2015-12-03", "Desc3", new BigDecimal(4)));
-    }
-    table.setData(workLogs, new BigDecimal("400"));
-
-
     ((Group) scene.getRoot()).getChildren().addAll(mainScene);
     stage.setScene(scene);
     stage.show();
@@ -81,6 +76,21 @@ public class MainApplication extends Application {
   private class SourceActionProcessor implements ImportDataLayer.ActionProcessor {
 
     public void processFile(File selectedFile) {
+      //      List<WorkLogEntry> workLogs = new ArrayList<WorkLogEntry>();
+      //      for (int i = 0; i < 12; i++) {
+      //        workLogs.add(new WorkLogEntry("2015-12-01", "Desc1", new BigDecimal(8)));
+      //        workLogs.add(new WorkLogEntry("2015-12-02", "Desc2", new BigDecimal(6)));
+      //        workLogs.add(new WorkLogEntry("2015-12-03", "Desc3", new BigDecimal(4)));
+      //      }
+      try {
+        IWorkLogDataProvider workLogDataProvider = new XLSWorkLogDataProvider(ConfigurationProvider.getInstance(),
+            new FileInputStream(selectedFile));
+        List<WorkLogEntry> workLogs = workLogDataProvider.getWorkLogs();
+        table.setData(workLogs, new BigDecimal("400"));
+      } catch (FileNotFoundException e) {
+        e.printStackTrace();
+      }
+
 
     }
 
