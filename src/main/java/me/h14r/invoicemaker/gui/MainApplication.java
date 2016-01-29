@@ -49,6 +49,13 @@ public class MainApplication extends Application {
 
   @Override
   public void start(Stage stage) throws Exception {
+	/*try {
+		Parent root = FXMLLoader.load(getClass().getResource("Scene.fxml"));
+		primaryStage.setScene(new Scene(root, 800, 600));
+		primaryStage.show();
+	} catch (Exception e) {
+	}*/
+	
     Scene scene = new Scene(new Group());
     stage.setTitle("Helmentrepreneur.Me");
     stage.setWidth(800);
