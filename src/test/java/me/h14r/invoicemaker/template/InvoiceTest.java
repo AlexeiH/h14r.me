@@ -17,6 +17,7 @@ import com.haulmont.yarg.structure.impl.ReportTemplateBuilder;
 import com.haulmont.yarg.structure.xml.impl.DefaultXmlReader;
 import com.haulmont.yarg.util.groovy.DefaultScriptingImpl;
 import org.apache.commons.io.IOUtils;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.FileOutputStream;
@@ -24,6 +25,7 @@ import java.io.InputStream;
 
 public class InvoiceTest {
   @Test
+  @Ignore
   public void testInvoiceReport() throws Exception {
     InputStream inputStream = getClass().getResourceAsStream("/template/invoice.xml");
     Report report = new DefaultXmlReader().parseXml(IOUtils.toString(inputStream, "UTF-8"));
@@ -40,6 +42,7 @@ public class InvoiceTest {
 
 
   @Test
+  @Ignore
   public void testInvoiceReportRaw() throws Exception {
     ReportBuilder reportBuilder = new ReportBuilder();
     ReportTemplateBuilder reportTemplateBuilder = new ReportTemplateBuilder().documentPath("c:\\sandbox\\h14r" +
