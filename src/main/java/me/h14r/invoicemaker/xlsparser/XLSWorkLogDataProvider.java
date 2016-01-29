@@ -93,7 +93,6 @@ public class XLSWorkLogDataProvider implements IWorkLogDataProvider {
 						.format("Incorrect grouping kind configuration: {0}!", groupingConfig);
 				throw new RuntimeException(incorrectGroupingMessage);
 			}
-			workLogs.add(workLogEntry);
 		}
 
 		return workLogs;	
