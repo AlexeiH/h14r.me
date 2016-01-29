@@ -7,14 +7,20 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.TextAlignment;
 import javafx.util.Callback;
 import me.h14r.invoicemaker.api.WorkLogEntry;
 import me.h14r.invoicemaker.api.WorkLogEntryComparator;
@@ -29,25 +35,24 @@ public class WorkLogTable extends VBox implements IWorkLogEditor {
   private TableView<WorkLogWrapper> table = new TableView<WorkLogWrapper>();
   private ObservableList<WorkLogWrapper> data;
   private List<WorkLogEntry> workLogs;
-  final HBox hb = new HBox();
-
+  private Label totalLabel;
 
   public WorkLogTable() {
 
-    final Label label = new Label("WorkLogs");
-    label.setFont(new Font("Arial", 20));
-
     table.setEditable(true);
-    Callback<TableColumn, TableCell> cellFactory = new Callback<TableColumn, TableCell>() {
+    table.setMinWidth(760);
+
+    Callback<TableColumn, TableCell> editCellFactory = new Callback<TableColumn, TableCell>() {
       public TableCell call(TableColumn p) {
         return new EditingCell();
       }
     };
 
     TableColumn keyColumn = new TableColumn("Key");
+    keyColumn.setResizable(false);
     keyColumn.setMinWidth(100);
     keyColumn.setCellValueFactory(new PropertyValueFactory<WorkLogWrapper, String>("key"));
-    keyColumn.setCellFactory(cellFactory);
+    keyColumn.setCellFactory(editCellFactory);
     keyColumn.setOnEditCommit(new EventHandler<CellEditEvent<WorkLogWrapper, String>>() {
       public void handle(CellEditEvent<WorkLogWrapper, String> t) {
         ((WorkLogWrapper) t.getTableView().getItems().get(t.getTablePosition().getRow())).setKey(t.getNewValue());
@@ -55,37 +60,50 @@ public class WorkLogTable extends VBox implements IWorkLogEditor {
     });
 
 
-    TableColumn lastNameCol = new TableColumn("Description");
-    lastNameCol.setMinWidth(200);
-    lastNameCol.setCellValueFactory(new PropertyValueFactory<WorkLogWrapper, String>("desc"));
-    lastNameCol.setCellFactory(cellFactory);
-    lastNameCol.setOnEditCommit(new EventHandler<CellEditEvent<WorkLogWrapper, String>>() {
-          public void handle(CellEditEvent<WorkLogWrapper, String> t) {
-            ((WorkLogWrapper) t.getTableView().getItems().get(t.getTablePosition().getRow())).setDesc(t.getNewValue());
-          }
-        });
+    TableColumn descColumn = new TableColumn("Description");
+    keyColumn.setResizable(false);
+    descColumn.setMinWidth(500);
+    descColumn.setCellValueFactory(new PropertyValueFactory<WorkLogWrapper, String>("desc"));
+    descColumn.setCellFactory(editCellFactory);
+    descColumn.setOnEditCommit(new EventHandler<CellEditEvent<WorkLogWrapper, String>>() {
+      public void handle(CellEditEvent<WorkLogWrapper, String> t) {
+        ((WorkLogWrapper) t.getTableView().getItems().get(t.getTablePosition().getRow())).setDesc(t.getNewValue());
+      }
+    });
 
-    TableColumn emailCol = new TableColumn("Hours");
-    emailCol.setMinWidth(50);
-    emailCol.setCellValueFactory(new PropertyValueFactory<WorkLogWrapper, String>("hrs"));
-    emailCol.setCellFactory(cellFactory);
-    emailCol.setOnEditCommit(new EventHandler<CellEditEvent<WorkLogWrapper, String>>() {
+    TableColumn hrsColumn = new TableColumn("Hours");
+    keyColumn.setResizable(false);
+    hrsColumn.setMinWidth(50);
+    hrsColumn.setCellValueFactory(new PropertyValueFactory<WorkLogWrapper, String>("hrs"));
+    hrsColumn.setCellFactory(editCellFactory);
+    hrsColumn.setOnEditCommit(new EventHandler<CellEditEvent<WorkLogWrapper, String>>() {
       public void handle(CellEditEvent<WorkLogWrapper, String> t) {
         ((WorkLogWrapper) t.getTableView().getItems().get(t.getTablePosition().getRow())).setHrs(t.getNewValue());
       }
     });
 
+    Callback<TableColumn, TableCell> actionCellFactory = new Callback<TableColumn, TableCell>() {
+      public TableCell call(TableColumn p) {
+        return new ActionCell();
+      }
+    };
 
-    table.getColumns().addAll(keyColumn, lastNameCol, emailCol);
+    TableColumn actionColumn = new TableColumn("Actions");
+    actionColumn.setMinWidth(50);
+    actionColumn.setCellFactory(actionCellFactory);
+
+    table.getColumns().addAll(keyColumn, descColumn, hrsColumn, actionColumn);
+
 
     final TextField keyField = new TextField();
     keyField.setPromptText("Key");
-    keyField.setMaxWidth(keyColumn.getPrefWidth());
+    keyField.setMaxWidth(keyColumn.getMinWidth());
     final TextField descField = new TextField();
-    descField.setMaxWidth(lastNameCol.getPrefWidth());
+    descField.setMinWidth(descColumn.getMinWidth());
+    descField.setMaxWidth(descColumn.getMinWidth());
     descField.setPromptText("Desc");
     final TextField hrsField = new TextField();
-    hrsField.setMaxWidth(emailCol.getPrefWidth());
+    hrsField.setMaxWidth(hrsColumn.getMinWidth());
     hrsField.setPromptText("Hrs");
 
     final Button addButton = new Button("Add");
@@ -107,12 +125,25 @@ public class WorkLogTable extends VBox implements IWorkLogEditor {
       }
     });
 
-    hb.getChildren().addAll(keyField, descField, hrsField, addButton);
-    hb.setSpacing(3);
+    HBox hbAdd = new HBox();
+    hbAdd.getChildren().addAll(keyField, descField, hrsField, addButton);
+    hbAdd.setSpacing(3);
+
+    totalLabel = new Label("Total");
+    totalLabel.setTextAlignment(TextAlignment.RIGHT);
+    totalLabel.setAlignment(Pos.CENTER_RIGHT);
+    totalLabel.setFont(Font.font("Arial", FontWeight.BOLD, 12));
+
+    HBox hbTotal = new HBox();
+    hbTotal.getChildren().addAll(totalLabel);
+    hbTotal.setSpacing(3);
+    hbTotal.setMinWidth(keyColumn.getMinWidth() + descColumn.getMinWidth() + hrsColumn.getMinWidth());
+    hbTotal.setMaxWidth(keyColumn.getMinWidth() + descColumn.getMinWidth() + hrsColumn.getMinWidth());
+    hbTotal.setAlignment(Pos.CENTER_RIGHT);
 
     this.setSpacing(5);
     this.setPadding(new Insets(10, 0, 0, 10));
-    this.getChildren().addAll(label, refreshButton, table, hb);
+    this.getChildren().addAll(refreshButton, table, hbTotal, hbAdd);
   }
 
   public void setData(List<WorkLogEntry> workLogs) {
@@ -123,6 +154,21 @@ public class WorkLogTable extends VBox implements IWorkLogEditor {
     this.data = FXCollections.observableArrayList(workLogWrappers);
     this.workLogs = workLogs;
     table.setItems(data);
+    recalcTotal();
+  }
+
+  private void recalcTotal() {
+    BigDecimal total = new BigDecimal("0.00");
+    for (WorkLogWrapper workLogWrapper : data) {
+      if (workLogWrapper.getHrs() != null) {
+        try {
+          BigDecimal hrs = new BigDecimal(workLogWrapper.getHrs());
+          total = total.add(hrs);
+        } catch (Exception ignored) {
+        }
+      }
+    }
+    totalLabel.setText("Total: " + total);
   }
 
   public List<WorkLogEntry> getEdited() {
@@ -182,6 +228,10 @@ public class WorkLogTable extends VBox implements IWorkLogEditor {
 
     private TextField textField;
 
+    private boolean escapePressed;
+
+    private TablePosition<WorkLogWrapper, ?> tablePos = null;
+
     public EditingCell() {
     }
 
@@ -198,15 +248,55 @@ public class WorkLogTable extends VBox implements IWorkLogEditor {
             textField.requestFocus();
           }
         });
+        escapePressed = false;
+        final TableView<WorkLogWrapper> table = getTableView();
+        tablePos = table.getEditingCell();
       }
     }
 
     @Override
     public void cancelEdit() {
-      super.cancelEdit();
-
-      setText((String) getItem());
+      if (escapePressed) {
+        // this is a cancel event after escape key
+        super.cancelEdit();
+        setText((String) getItem());
+      } else {
+        // this is not a cancel event after escape key
+        // we interpret it as commit.
+        commitEdit(textField.getText());
+      }
       setGraphic(null);
+    }
+
+    @Override
+    public void commitEdit(String newValue) {
+      if (!isEditing())
+        return;
+
+      final TableView<WorkLogWrapper> table = getTableView();
+      if (table != null) {
+        // Inform the TableView of the edit being ready to be committed.
+        CellEditEvent editEvent = new CellEditEvent(table, tablePos, TableColumn.editCommitEvent(), newValue);
+
+        Event.fireEvent(getTableColumn(), editEvent);
+      }
+
+      // we need to setEditing(false):
+      super.cancelEdit(); // this fires an invalid EditCancelEvent.
+
+      // update the item within this cell, so that it represents the new value
+      updateItem(newValue, false);
+
+      if (table != null) {
+        // reset the editing cell on the TableView
+        table.edit(-1, null);
+
+        // request focus back onto the table, only if the current focus
+        // owner has the table as a parent (otherwise the user might have
+        // clicked out of the table entirely and given focus to something else.
+        // It would be rude of us to request it back again.
+        // requestFocusOnControlOnlyIfCurrentFocusOwnerIsChild(table);
+      }
     }
 
     @Override
@@ -228,6 +318,7 @@ public class WorkLogTable extends VBox implements IWorkLogEditor {
           setGraphic(null);
         }
       }
+      recalcTotal();
     }
 
     private void createTextField() {
@@ -240,10 +331,43 @@ public class WorkLogTable extends VBox implements IWorkLogEditor {
           }
         }
       });
+      textField.setOnKeyPressed(new EventHandler<KeyEvent>() {
+        public void handle(KeyEvent event) {
+          if (event.getCode() == KeyCode.ESCAPE)
+            escapePressed = true;
+          else
+            escapePressed = false;
+        }
+      });
     }
 
     private String getString() {
       return getItem() == null ? "" : getItem().toString();
+    }
+  }
+
+  class ActionCell extends TableCell<WorkLogWrapper, String> {
+    final Button deleteButton = new Button("Delete");
+
+    ActionCell() {
+
+      deleteButton.setOnAction(new EventHandler<ActionEvent>() {
+        public void handle(ActionEvent t) {
+          data.remove(ActionCell.this.getTableRow().getItem());
+          recalcTotal();
+        }
+      });
+    }
+
+    //Display button if the row is not empty
+    @Override
+    protected void updateItem(String value, boolean empty) {
+      super.updateItem(value, empty);
+      if (!empty) {
+        setGraphic(deleteButton);
+      } else {
+        setGraphic(null);
+      }
     }
   }
 }

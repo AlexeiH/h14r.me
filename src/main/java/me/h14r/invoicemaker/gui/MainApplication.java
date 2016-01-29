@@ -21,16 +21,18 @@ public class MainApplication extends Application {
   public void start(Stage stage) throws Exception {
     Scene scene = new Scene(new Group());
     stage.setTitle("Helmentrepreneur.Me");
-    stage.setWidth(500);
-    stage.setHeight(600);
+    stage.setWidth(800);
+    stage.setHeight(800);
 
     WorkLogTable table = new WorkLogTable();
     ((Group) scene.getRoot()).getChildren().addAll(table);
 
     List<WorkLogEntry> workLogs = new ArrayList<WorkLogEntry>();
-    workLogs.add(new WorkLogEntry("2015-12-01", "Desc1", new BigDecimal(8)));
-    workLogs.add(new WorkLogEntry("2015-12-02", "Desc2", new BigDecimal(6)));
-    workLogs.add(new WorkLogEntry("2015-12-03", "Desc3", new BigDecimal(4)));
+    for (int i = 0; i < 12; i++) {
+      workLogs.add(new WorkLogEntry("2015-12-01", "Desc1", new BigDecimal(8)));
+      workLogs.add(new WorkLogEntry("2015-12-02", "Desc2", new BigDecimal(6)));
+      workLogs.add(new WorkLogEntry("2015-12-03", "Desc3", new BigDecimal(4)));
+    }
     table.setData(workLogs);
 
 
