@@ -25,6 +25,7 @@ import javafx.scene.text.TextAlignment;
 import javafx.util.Callback;
 import me.h14r.invoicemaker.api.WorkLogEntry;
 import me.h14r.invoicemaker.api.WorkLogEntryComparator;
+import me.h14r.invoicemaker.util.DefaultWorkLogTotalHrsAdjuster;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -118,12 +119,27 @@ public class WorkLogTable extends VBox implements IWorkLogEditor {
       }
     });
 
+
     final Button refreshButton = new Button("Restore");
     refreshButton.setOnAction(new EventHandler<ActionEvent>() {
       public void handle(ActionEvent e) {
         refreshData();
       }
     });
+
+    final Button adjustData = new Button("Adjust");
+    adjustData.setOnAction(new EventHandler<ActionEvent>() {
+      public void handle(ActionEvent e) {
+        if (workLogs != null) {
+          DefaultWorkLogTotalHrsAdjuster adjuster = new DefaultWorkLogTotalHrsAdjuster();
+          refreshData(adjuster.adjustTotals(workLogs, expectedHrs));
+        }
+      }
+    });
+
+    HBox hbToolbar = new HBox();
+    hbToolbar.getChildren().addAll(refreshButton, adjustData);
+    hbToolbar.setSpacing(3);
 
     HBox hbAdd = new HBox();
     hbAdd.getChildren().addAll(keyField, descField, hrsField, addButton);
@@ -143,7 +159,7 @@ public class WorkLogTable extends VBox implements IWorkLogEditor {
 
     this.setSpacing(5);
     this.setPadding(new Insets(10, 0, 0, 10));
-    this.getChildren().addAll(refreshButton, table, hbTotal, hbAdd);
+    this.getChildren().addAll(hbToolbar, table, hbTotal, hbAdd);
   }
 
   public void setData(List<WorkLogEntry> workLogs, BigDecimal expectedHrs) {
@@ -153,15 +169,36 @@ public class WorkLogTable extends VBox implements IWorkLogEditor {
     recalcTotal();
   }
 
-  private void refreshData() {
-    if (workLogs != null) {
-      List<WorkLogWrapper> workLogWrappers = new ArrayList<WorkLogWrapper>();
-      for (WorkLogEntry workLogEntry : workLogs) {
-        workLogWrappers.add(new WorkLogWrapper(workLogEntry));
-      }
-      this.data = FXCollections.observableArrayList(workLogWrappers);
+  private void refreshData(List<WorkLogEntry> aWorkLogs) {
+    if (aWorkLogs != null) {
+      this.data = FXCollections.observableArrayList(convertFromWorkLogs(aWorkLogs));
       table.setItems(data);
     }
+  }
+
+  private void refreshData() {
+    if (workLogs != null) {
+      this.data = FXCollections.observableArrayList(convertFromWorkLogs(workLogs));
+      table.setItems(data);
+    }
+  }
+
+  private List<WorkLogWrapper> convertFromWorkLogs(List<WorkLogEntry> workLogs) {
+    List<WorkLogWrapper> workLogWrappers = new ArrayList<WorkLogWrapper>();
+    for (WorkLogEntry workLogEntry : workLogs) {
+      workLogWrappers.add(new WorkLogWrapper(workLogEntry));
+    }
+    return workLogWrappers;
+  }
+
+  private List<WorkLogEntry> convertToWorkLogs(List<WorkLogWrapper> workLogs) {
+    List<WorkLogEntry> result = new ArrayList<WorkLogEntry>();
+    for (WorkLogWrapper wrapper : data) {
+      WorkLogEntry entry = new WorkLogEntry(wrapper.getKey(), wrapper.getDesc(), new BigDecimal(wrapper.getHrs()));
+      result.add(entry);
+    }
+    Collections.sort(result, new WorkLogEntryComparator());
+    return result;
   }
 
   private void recalcTotal() {
@@ -186,13 +223,7 @@ public class WorkLogTable extends VBox implements IWorkLogEditor {
   }
 
   public List<WorkLogEntry> getEdited() {
-    List<WorkLogEntry> result = new ArrayList<WorkLogEntry>();
-    for (WorkLogWrapper wrapper : data) {
-      WorkLogEntry entry = new WorkLogEntry(wrapper.getKey(), wrapper.getDesc(), new BigDecimal(wrapper.getHrs()));
-      result.add(entry);
-    }
-    Collections.sort(result, new WorkLogEntryComparator());
-    return result;
+    return convertToWorkLogs(data);
   }
 
   public static class WorkLogWrapper {
