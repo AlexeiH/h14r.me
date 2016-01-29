@@ -1,7 +1,5 @@
 package me.h14r.invoicemaker.gui;
 
-import java.io.File;
-
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -15,9 +13,14 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 
+import java.io.File;
+
 public class ImportDataLayer extends HBox {
 
-  public ImportDataLayer() {
+  private ActionProcessor actionProcessor;
+
+  public ImportDataLayer(ActionProcessor actionProcessor) {
+    this.actionProcessor = actionProcessor;
     VBox vbox = createLeftVBox();
     setHgrow(vbox, Priority.ALWAYS);
     getChildren().add(vbox);
@@ -26,16 +29,16 @@ public class ImportDataLayer extends HBox {
     getChildren().add(vbox);
     setHgrow(vbox, Priority.ALWAYS);
 
-    setStyle("-fx-border-style: solid; -fx-border-width: 1; -fx-border-color: black;");
-    setPadding(new Insets(25, 25, 25, 25));
+    //    setStyle("-fx-border-style: solid; -fx-border-width: 1; -fx-border-color: black;");
+    setPadding(new Insets(5, 5, 5, 5));
   }
 
   private VBox createLeftVBox(){
     VBox vbox = new VBox(10);
-    vbox.setPadding(new Insets(25, 25, 25, 25));
+    vbox.setPadding(new Insets(5, 5, 5, 5));
 
     Label label = new Label("File");
-    label.setStyle("-fx-font-size: 20pt;");
+    label.setStyle("-fx-font-size: 12pt;");
 
     // File choose button
     Button chooseFileButton = new Button("Choose a file...");
@@ -46,28 +49,31 @@ public class ImportDataLayer extends HBox {
     return vbox;
   }
 
+  private TextField login;
+  private PasswordField password;
+
   private VBox createRightVBox(){
     VBox vbox = new VBox(10);
-    vbox.setPadding(new Insets(25, 25, 25, 25));
+    vbox.setPadding(new Insets(5, 5, 5, 5));
 
     Label label = new Label("JIRA");
-    label.setStyle("-fx-font-size: 20pt;");
+    label.setStyle("-fx-font-size: 12pt;");
     vbox.getChildren().add(label);
 
     //Add login label and text field
-    HBox line = new HBox(30);
+    HBox line = new HBox(10);
     line.setAlignment(Pos.BOTTOM_RIGHT);
     label = new Label("Login");
-    TextField login = new TextField();
+    login = new TextField();
     login.setPromptText("JIRA login");
     line.getChildren().addAll(label, login);
     vbox.getChildren().add(line);
 
     //Add password label and password field
-    line = new HBox(30);
+    line = new HBox(10);
     line.setAlignment(Pos.BOTTOM_RIGHT);
     label = new Label("Password");
-    PasswordField password = new PasswordField();
+    password = new PasswordField();
     password.setPromptText("JIRA password");
     line.getChildren().addAll(label, password);
     vbox.getChildren().add(line);
@@ -97,14 +103,20 @@ public class ImportDataLayer extends HBox {
     File selectedFile = fileChooser.showOpenDialog(null);
 
     if (selectedFile != null) {
-        //TODO put code for file processing here
+      actionProcessor.processFile(selectedFile);
     }
   }
 
   private class ProcessButtonListener implements EventHandler<ActionEvent> {
 
     public void handle(ActionEvent e) {
-
+      actionProcessor.processJira(login.getText(), password.getText());
     }
+  }
+
+  public interface ActionProcessor {
+    void processFile(File selectedFile);
+
+    void processJira(String login, String password);
   }
 }
