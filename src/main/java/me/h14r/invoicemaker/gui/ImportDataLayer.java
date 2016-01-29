@@ -12,6 +12,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 
 import java.io.File;
 
@@ -104,6 +105,9 @@ public class ImportDataLayer extends HBox {
 
     FileChooser fileChooser = new FileChooser();
     fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+    fileChooser.getExtensionFilters().addAll(
+        new ExtensionFilter("Text Files", "*.txt"),
+        new ExtensionFilter("All Files", "*.*"));
     File selectedFile = fileChooser.showOpenDialog(null);
 
     if (selectedFile != null) {
