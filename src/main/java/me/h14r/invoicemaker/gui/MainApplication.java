@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -42,7 +43,6 @@ public class MainApplication extends Application {
     stage.setWidth(800);
     stage.setHeight(800);
 
-
     HBox invoiceData = new HBox();
     Label invoiceNoLabel = new Label("InvoiceNo");
     Label monthLabel = new Label("Month");
@@ -52,6 +52,8 @@ public class MainApplication extends Application {
 
     HBox toolbar = new HBox();
     final Button generateButton = new Button("Generate");
+    toolbar.setAlignment(Pos.CENTER_RIGHT);
+    toolbar.setPadding(new Insets(15, 0, 0, 0));
     generateButton.setOnAction(new EventHandler<ActionEvent>() {
       public void handle(ActionEvent e) {
         generateTemplate();
