@@ -18,6 +18,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
@@ -35,6 +36,7 @@ public class WorkLogTable extends VBox implements IWorkLogEditor {
   private TableView<WorkLogWrapper> table = new TableView<WorkLogWrapper>();
   private ObservableList<WorkLogWrapper> data;
   private List<WorkLogEntry> workLogs;
+  private BigDecimal expectedHrs;
   private Label totalLabel;
 
   public WorkLogTable() {
@@ -119,9 +121,7 @@ public class WorkLogTable extends VBox implements IWorkLogEditor {
     final Button refreshButton = new Button("Restore");
     refreshButton.setOnAction(new EventHandler<ActionEvent>() {
       public void handle(ActionEvent e) {
-        if (workLogs != null) {
-          setData(workLogs);
-        }
+        refreshData();
       }
     });
 
@@ -146,15 +146,22 @@ public class WorkLogTable extends VBox implements IWorkLogEditor {
     this.getChildren().addAll(refreshButton, table, hbTotal, hbAdd);
   }
 
-  public void setData(List<WorkLogEntry> workLogs) {
-    List<WorkLogWrapper> workLogWrappers = new ArrayList<WorkLogWrapper>();
-    for (WorkLogEntry workLogEntry : workLogs) {
-      workLogWrappers.add(new WorkLogWrapper(workLogEntry));
-    }
-    this.data = FXCollections.observableArrayList(workLogWrappers);
+  public void setData(List<WorkLogEntry> workLogs, BigDecimal expectedHrs) {
     this.workLogs = workLogs;
-    table.setItems(data);
+    this.expectedHrs = expectedHrs;
+    refreshData();
     recalcTotal();
+  }
+
+  private void refreshData() {
+    if (workLogs != null) {
+      List<WorkLogWrapper> workLogWrappers = new ArrayList<WorkLogWrapper>();
+      for (WorkLogEntry workLogEntry : workLogs) {
+        workLogWrappers.add(new WorkLogWrapper(workLogEntry));
+      }
+      this.data = FXCollections.observableArrayList(workLogWrappers);
+      table.setItems(data);
+    }
   }
 
   private void recalcTotal() {
@@ -169,6 +176,13 @@ public class WorkLogTable extends VBox implements IWorkLogEditor {
       }
     }
     totalLabel.setText("Total: " + total);
+    if (expectedHrs != null) {
+      if (total.doubleValue() == expectedHrs.doubleValue()) {
+        totalLabel.setTextFill(Color.GREEN);
+      } else {
+        totalLabel.setTextFill(Color.RED);
+      }
+    }
   }
 
   public List<WorkLogEntry> getEdited() {

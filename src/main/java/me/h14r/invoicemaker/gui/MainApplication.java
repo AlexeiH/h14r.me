@@ -33,7 +33,7 @@ public class MainApplication extends Application {
       workLogs.add(new WorkLogEntry("2015-12-02", "Desc2", new BigDecimal(6)));
       workLogs.add(new WorkLogEntry("2015-12-03", "Desc3", new BigDecimal(4)));
     }
-    table.setData(workLogs);
+    table.setData(workLogs, new BigDecimal("200"));
 
 
     stage.setScene(scene);
