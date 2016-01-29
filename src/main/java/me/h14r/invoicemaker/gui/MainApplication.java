@@ -1,5 +1,6 @@
 package me.h14r.invoicemaker.gui;
 
+import com.haulmont.yarg.structure.ReportOutputType;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -18,13 +19,18 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import me.h14r.invoicemaker.ConfigurationProvider;
 import me.h14r.invoicemaker.api.IWorkLogDataProvider;
+import me.h14r.invoicemaker.api.InvoiceValueHolder;
 import me.h14r.invoicemaker.api.WorkLogEntry;
+import me.h14r.invoicemaker.template.YARGTemplateProcessor;
+import me.h14r.invoicemaker.util.CommonUtils;
 import me.h14r.invoicemaker.xlsparser.XLSWorkLogDataProvider;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 public class MainApplication extends Application {
@@ -90,7 +96,20 @@ public class MainApplication extends Application {
   }
 
   private void generateTemplate() {
-    //TODO
+    YARGTemplateProcessor tt = new YARGTemplateProcessor("c:\\sandbox\\h14r" +
+        ".Me\\src\\test\\resources\\template\\invoice.docx", "invoice.docx", ReportOutputType.docx);
+    InvoiceValueHolder vh = new InvoiceValueHolder();
+    vh.setWorkLogs(table.getEdited());
+    vh.setMonth(new Date());
+    vh.setNumber(invoiceNo.getText());
+    vh.setTotalHours(CommonUtils.total(vh.getWorkLogs()));
+    vh.setTotalAmount(new BigDecimal(amount.getText()));
+    try {
+      tt.generate(vh, new FileOutputStream("c:\\sandbox\\h14r.Me\\invoice.docx"));
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    }
+
   }
 
   private class SourceActionProcessor implements ImportDataLayer.ActionProcessor {
