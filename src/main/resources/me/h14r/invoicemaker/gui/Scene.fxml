@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="me.h14r.invoicemaker.gui.FXMLController">
+   <children>
+      <Pane layoutX="20.0" layoutY="20.0" prefHeight="100.0" prefWidth="760.0" style="-fx-border-width: 1; -fx-border-color: black;">
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+         <children>
+            <Text layoutX="21.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Invoice">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Text>
+            <Text layoutX="21.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Invoice No:" />
+            <Text layoutX="357.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Month:" />
+            <TextField layoutX="92.0" layoutY="46.0" />
+            <DatePicker layoutX="406.0" layoutY="46.0" />
+         </children>
+      </Pane>
+      <Pane layoutX="20.0" layoutY="140.0" prefHeight="130.0" prefWidth="760.0" style="-fx-border-width: 1; -fx-border-color: black;">
+         <children>
+            <Text layoutX="14.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Source">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Text>
+            <Text layoutX="418.0" layoutY="47.0" strokeType="OUTSIDE" strokeWidth="0.0" text="User name:" />
+            <Text layoutX="418.0" layoutY="76.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Password:" />
+            <RadioButton fx:id="fileRadio" layoutX="14.0" layoutY="34.0" mnemonicParsing="false" onAction="#fileRadioChosen" text="File" />
+            <RadioButton fx:id="jiraRadio" layoutX="353.0" layoutY="34.0" mnemonicParsing="false" onAction="#jiraRadioChosen" selected="true" text="JIRA" />
+            <TextField fx:id="usernameField" layoutX="489.0" layoutY="30.0" />
+            <PasswordField fx:id="passwordField" layoutX="489.0" layoutY="59.0" />
+            <Button fx:id="processBtn" layoutX="489.0" layoutY="94.0" mnemonicParsing="false" onAction="#getXLSReportFromJira" text="Process" />
+            <Button fx:id="chooseFileBtn" disable="true" layoutX="72.0" layoutY="30.0" mnemonicParsing="false" onAction="#browseFile" text="Choose file" />
+         </children>
+      </Pane>
+      <Pane layoutX="20.0" layoutY="290.0" prefHeight="200.0" prefWidth="200.0" style="-fx-border-width: 1; -fx-border-color: black;">
+         <children>
+            <Text layoutX="14.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Amount of invoice:" />
+            <Text layoutX="14.0" layoutY="54.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Rate:" />
+            <Text layoutX="14.0" layoutY="79.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Hours to invoice:" />
+            <Text fx:id="hoursToInvoiceText" layoutX="126.0" layoutY="79.0" strokeType="OUTSIDE" strokeWidth="0.0" />
+            <TextField fx:id="amountOfInvoiceField" layoutX="126.0" layoutY="10.0" prefHeight="25.0" prefWidth="61.0" />
+            <TextField fx:id="rateField" layoutX="126.0" layoutY="37.0" prefHeight="25.0" prefWidth="61.0" />
+         </children>
+      </Pane>
+      <Pane layoutX="242.0" layoutY="290.0" prefHeight="290.0" prefWidth="541.0" style="-fx-border-width: 1; -fx-border-color: black;">
+         <children>
+            <Button layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#addLineToTable" text="Add a line" />
+            <Button layoutX="128.0" layoutY="14.0" mnemonicParsing="false" onAction="#generateReports" text="Generate" />
+            <TableView layoutX="13.0" layoutY="47.0" prefHeight="230.0" prefWidth="516.0">
+              <columns>
+                <TableColumn prefWidth="75.0" text="C1" />
+                <TableColumn prefWidth="75.0" text="C2" />
+              </columns>
+            </TableView>
+         </children>
+      </Pane>
+   </children>
+</Pane>
