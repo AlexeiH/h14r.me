@@ -1,8 +1,14 @@
 package me.h14r.invoicemaker.jira;
 
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import me.h14r.invoicemaker.ConfigurationProvider;
+import me.h14r.invoicemaker.api.IWorkLogDataProvider;
+import me.h14r.invoicemaker.api.WorkLogEntry;
+import me.h14r.invoicemaker.xlsparser.XLSWorkLogDataProvider;
+import org.apache.commons.configuration.Configuration;
+import org.apache.poi.util.IOUtils;
+
+import javax.net.ssl.HttpsURLConnection;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
@@ -11,15 +17,7 @@ import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-
-import javax.net.ssl.HttpsURLConnection;
-
-import org.apache.commons.configuration.Configuration;
-
-import me.h14r.invoicemaker.ConfigurationProvider;
-import me.h14r.invoicemaker.api.IWorkLogDataProvider;
-import me.h14r.invoicemaker.api.WorkLogEntry;
-import me.h14r.invoicemaker.xlsparser.XLSWorkLogDataProvider;
+import java.util.Locale;
 
 /**
  * 
@@ -42,13 +40,24 @@ public class JIRAWorkLogDataProvider implements IWorkLogDataProvider {
 
 	public List<WorkLogEntry> getWorkLogs() {
 		InputStream xlsInputStream = getXlsData();
+		FileOutputStream fos = null;
+		try {
+			fos = new FileOutputStream("c:\\temp\\testResp.dat");
+			IOUtils.copy(xlsInputStream, fos);
+			fos.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 		XLSWorkLogDataProvider workLogProvider = new XLSWorkLogDataProvider(configuration, xlsInputStream);
 
 		return workLogProvider.getWorkLogs();
 	}
 
 	private InputStream getXlsData() {
-		SimpleDateFormat dateFormat = new SimpleDateFormat(FILTER_DATE_FORMAT);
+		SimpleDateFormat dateFormat = new SimpleDateFormat(FILTER_DATE_FORMAT, Locale.US);
 		String from = dateFormat.format(fromDate);
 		String to = dateFormat.format(toDate);
 		from = from.replaceAll("/", "%2F");

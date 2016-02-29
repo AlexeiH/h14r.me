@@ -5,6 +5,7 @@ import me.h14r.invoicemaker.api.WorkLogEntry;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
@@ -18,7 +19,7 @@ public class DefaultWorkLogTotalHrsAdjuster implements IWorkLogTotalHrsAdjuster 
   private BigDecimal maxPerDay = new BigDecimal("12");
 
 
-  public List<WorkLogEntry> adjustTotals(List<WorkLogEntry> workLogs, BigDecimal expectedHrs) {
+  public Collection<WorkLogEntry> adjustTotals(Collection<WorkLogEntry> workLogs, BigDecimal expectedHrs) {
     List<WorkLogEntry> result = new ArrayList<WorkLogEntry>();
     result.addAll(workLogs);
 

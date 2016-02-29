@@ -120,6 +120,7 @@ public class ImportDataLayer extends HBox {
     public void handle(ActionEvent e) {
       actionProcessor.processJira(login.getText(), password.getText());
     }
+
   }
 
   public interface ActionProcessor {
@@ -127,4 +128,13 @@ public class ImportDataLayer extends HBox {
 
     void processJira(String login, String password);
   }
+
+  public String getPassword() {
+    return password.getText();
+  }
+
+  public String getLogin() {
+    return login.getText();
+  }
+
 }

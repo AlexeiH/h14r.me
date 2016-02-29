@@ -29,6 +29,7 @@ import me.h14r.invoicemaker.util.DefaultWorkLogTotalHrsAdjuster;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -162,14 +163,19 @@ public class WorkLogTable extends VBox implements IWorkLogEditor {
     this.getChildren().addAll(hbToolbar, table, hbTotal, hbAdd);
   }
 
-  public void setData(List<WorkLogEntry> workLogs, BigDecimal expectedHrs) {
-    this.workLogs = workLogs;
-    this.expectedHrs = expectedHrs;
+  public void setData(Collection<WorkLogEntry> workLogs) {
+    this.workLogs = new ArrayList<WorkLogEntry>();
+    this.workLogs.addAll(workLogs);
+    Collections.sort(this.workLogs, new WorkLogEntryComparator());
     refreshData();
     recalcTotal();
   }
 
-  private void refreshData(List<WorkLogEntry> aWorkLogs) {
+  public void setExpectedHours(BigDecimal expectedHours) {
+    this.expectedHrs = expectedHours;
+  }
+
+  private void refreshData(Collection<WorkLogEntry> aWorkLogs) {
     if (aWorkLogs != null) {
       this.data = FXCollections.observableArrayList(convertFromWorkLogs(aWorkLogs));
       table.setItems(data);
@@ -183,7 +189,7 @@ public class WorkLogTable extends VBox implements IWorkLogEditor {
     }
   }
 
-  private List<WorkLogWrapper> convertFromWorkLogs(List<WorkLogEntry> workLogs) {
+  private Collection<WorkLogWrapper> convertFromWorkLogs(Collection<WorkLogEntry> workLogs) {
     List<WorkLogWrapper> workLogWrappers = new ArrayList<WorkLogWrapper>();
     for (WorkLogEntry workLogEntry : workLogs) {
       workLogWrappers.add(new WorkLogWrapper(workLogEntry));

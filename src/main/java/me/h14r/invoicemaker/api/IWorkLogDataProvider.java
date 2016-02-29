@@ -1,9 +1,9 @@
 package me.h14r.invoicemaker.api;
 
-import java.util.List;
+import java.util.Collection;
 
 public interface IWorkLogDataProvider {
 
-  List<WorkLogEntry> getWorkLogs();
+  Collection<WorkLogEntry> getWorkLogs();
 
 }

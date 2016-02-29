@@ -3,13 +3,13 @@ package me.h14r.invoicemaker.util;
 import me.h14r.invoicemaker.api.WorkLogEntry;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.Collection;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class CommonUtils {
 
-  public static BigDecimal total(List<WorkLogEntry> workLogs) {
+  public static BigDecimal total(Collection<WorkLogEntry> workLogs) {
     BigDecimal total = new BigDecimal("0.00");
     for (WorkLogEntry workLog : workLogs) {
       if (workLog.getHours() != null) {

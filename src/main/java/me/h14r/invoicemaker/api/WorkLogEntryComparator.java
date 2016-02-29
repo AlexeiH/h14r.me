@@ -11,7 +11,7 @@ public class WorkLogEntryComparator implements Comparator<WorkLogEntry> {
     } else if (wl1.getKey() != null && wl2.getKey() == null) {
       return 1;
     } else {
-      return wl1.getKey().compareTo(wl1.getKey());
+      return wl1.getKey().compareTo(wl2.getKey());
     }
   }
 }

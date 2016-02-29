@@ -3,13 +3,15 @@ package me.h14r.invoicemaker.gui;
 import me.h14r.invoicemaker.api.WorkLogEntry;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.Collection;
 
 public interface IWorkLogEditor {
 
-  void setData(List<WorkLogEntry> workLogEntries, BigDecimal expectedHrs);
+  void setData(Collection<WorkLogEntry> workLogEntries);
 
-  List<WorkLogEntry> getEdited();
+  void setExpectedHours(BigDecimal expectedHours);
+
+  Collection<WorkLogEntry> getEdited();
 
 
 }

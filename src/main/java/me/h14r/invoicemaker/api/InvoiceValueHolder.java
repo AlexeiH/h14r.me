@@ -7,10 +7,14 @@ import java.util.List;
 public class InvoiceValueHolder {
 
   private String number;
-  private Date month;
+  private Date invoiceStart;
+  private Date invoiceEnd;
+  private Date invoiceDate;
   private List<WorkLogEntry> workLogs;
   private BigDecimal totalHours;
   private BigDecimal totalAmount;
+  private BigDecimal hourRate;
+
 
   public String getNumber() {
     return number;
@@ -18,14 +22,6 @@ public class InvoiceValueHolder {
 
   public void setNumber(String number) {
     this.number = number;
-  }
-
-  public Date getMonth() {
-    return month;
-  }
-
-  public void setMonth(Date month) {
-    this.month = month;
   }
 
   public List<WorkLogEntry> getWorkLogs() {
@@ -50,5 +46,37 @@ public class InvoiceValueHolder {
 
   public void setTotalAmount(BigDecimal totalAmount) {
     this.totalAmount = totalAmount;
+  }
+
+  public Date getInvoiceStart() {
+    return invoiceStart;
+  }
+
+  public void setInvoiceStart(Date invoiceStart) {
+    this.invoiceStart = invoiceStart;
+  }
+
+  public Date getInvoiceEnd() {
+    return invoiceEnd;
+  }
+
+  public void setInvoiceEnd(Date invoiceEnd) {
+    this.invoiceEnd = invoiceEnd;
+  }
+
+  public Date getInvoiceDate() {
+    return invoiceDate;
+  }
+
+  public void setInvoiceDate(Date invoiceDate) {
+    this.invoiceDate = invoiceDate;
+  }
+
+  public BigDecimal getHourRate() {
+    return hourRate;
+  }
+
+  public void setHourRate(BigDecimal hourRate) {
+    this.hourRate = hourRate;
   }
 }

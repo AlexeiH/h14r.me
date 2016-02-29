@@ -27,10 +27,11 @@ public class YARGTemplateProcessor implements ITemplateProcessor {
 	private String fileName;
 	private ReportOutputType type;
 
-	public YARGTemplateProcessor(String templatePath, String fileName, ReportOutputType type) {
+	public YARGTemplateProcessor(String templatePath, String fileName) {
 		this.templatePath = templatePath;
 		this.fileName = fileName;
-		this.type = type;
+		this.type = (fileName.endsWith("docx")) ? ReportOutputType.docx : (fileName.endsWith("xlsx")) ? ReportOutputType
+				.xlsx : null;
 	}
 
 	public void generate(InvoiceValueHolder valueHolder, OutputStream outputStream) {
@@ -71,26 +72,4 @@ public class YARGTemplateProcessor implements ITemplateProcessor {
 			e.printStackTrace();
 		}
 	}
-	
-	/*public static void main(String[] args) throws Exception {
-		String template = "c:\\Work\\HackDay\\templates\\invoice.docx";
-		OutputStream out = new FileOutputStream("c:\\Work\\HackDay\\templates\\invoice_result.docx");
-		
-		List<WorkLogEntry> workLogs = new ArrayList<WorkLogEntry>();
-	    for (int i = 0; i < 2; i++) {
-	      workLogs.add(new WorkLogEntry("2015-12-01", "Desc1", new BigDecimal(8)));
-	      workLogs.add(new WorkLogEntry("2015-12-02", "Desc2", new BigDecimal(6)));
-	      workLogs.add(new WorkLogEntry("2015-12-03", "Desc3", new BigDecimal(4)));
-	    }
-	    InvoiceValueHolder holder = new InvoiceValueHolder();
-	    holder.setMonth(new Date());
-	    holder.setNumber("1");
-	    holder.setTotalAmount(new BigDecimal(1000.111));
-	    holder.setTotalHours(new BigDecimal(97.956));
-	    holder.setWorkLogs(workLogs);
-		
-		YARGTemplateProcessor processor = new YARGTemplateProcessor(template, "invoice_result.docx", ReportOutputType
-		.docx);
-		processor.generate(holder, out);
-	}*/
 }

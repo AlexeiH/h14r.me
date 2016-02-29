@@ -1,10 +1,10 @@
 package me.h14r.invoicemaker.api;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.Collection;
 
 public interface IWorkLogTotalHrsAdjuster {
 
-  List<WorkLogEntry> adjustTotals(List<WorkLogEntry> workLogs, BigDecimal expectedHr);
+  Collection<WorkLogEntry> adjustTotals(Collection<WorkLogEntry> workLogs, BigDecimal expectedHr);
 
 }
