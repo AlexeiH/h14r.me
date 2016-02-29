@@ -105,8 +105,7 @@ public class ImportDataLayer extends HBox {
 
     FileChooser fileChooser = new FileChooser();
     fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
-    fileChooser.getExtensionFilters().addAll(
-        new ExtensionFilter("Text Files", "*.txt"),
+    fileChooser.getExtensionFilters().addAll(new ExtensionFilter("Excel Files", "*.xls"),
         new ExtensionFilter("All Files", "*.*"));
     File selectedFile = fileChooser.showOpenDialog(null);
 
