@@ -30,10 +30,7 @@ import me.h14r.invoicemaker.xlsparser.XLSWorkLogDataProvider;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.lang.StringUtils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.*;
 import java.math.BigDecimal;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
@@ -188,23 +185,31 @@ public class MainApplication extends Application {
 
     String invoiceTemplate = configuration.getString("template.invoice.source");
     String invoiceTargetPath = processFilePath(configuration.getString("template.invoice.target"), vh);
-    new File(invoiceTargetPath).mkdirs();
+    new File(invoiceTargetPath).getParentFile().mkdirs();
     try {
+      FileOutputStream fos = new FileOutputStream(invoiceTargetPath);
       YARGTemplateProcessor tt = new YARGTemplateProcessor(invoiceTemplate, Paths.get(invoiceTemplate).getFileName()
           .toString());
-      tt.generate(vh, new FileOutputStream(invoiceTargetPath));
+      tt.generate(vh, fos);
+      fos.close();
     } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
       e.printStackTrace();
     }
 
     String actTemplate = configuration.getString("template.act.source");
     String actTargetPath = processFilePath(configuration.getString("template.act.target"), vh);
-    new File(actTargetPath).mkdirs();
+    new File(actTargetPath).getParentFile().mkdirs();
     try {
+      FileOutputStream fos = new FileOutputStream(actTargetPath);
       YARGTemplateProcessor tt = new YARGTemplateProcessor(actTemplate, Paths.get(actTemplate).getFileName().toString
           ());
-      tt.generate(vh, new FileOutputStream(actTargetPath));
+      tt.generate(vh, fos);
+      fos.close();
     } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
       e.printStackTrace();
     }
 
