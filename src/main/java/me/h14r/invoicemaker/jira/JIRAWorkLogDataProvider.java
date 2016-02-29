@@ -15,6 +15,7 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -38,7 +39,7 @@ public class JIRAWorkLogDataProvider implements IWorkLogDataProvider {
 		this.toDate = toDate;
 	}
 
-	public List<WorkLogEntry> getWorkLogs() {
+	public Collection<WorkLogEntry> getWorkLogs() {
 		InputStream xlsInputStream = getXlsData();
 		FileOutputStream fos = null;
 		try {

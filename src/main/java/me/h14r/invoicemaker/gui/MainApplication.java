@@ -188,6 +188,7 @@ public class MainApplication extends Application {
 
     String invoiceTemplate = configuration.getString("template.invoice.source");
     String invoiceTargetPath = processFilePath(configuration.getString("template.invoice.target"), vh);
+    new File(invoiceTargetPath).mkdirs();
     try {
       YARGTemplateProcessor tt = new YARGTemplateProcessor(invoiceTemplate, Paths.get(invoiceTemplate).getFileName()
           .toString());
@@ -198,6 +199,7 @@ public class MainApplication extends Application {
 
     String actTemplate = configuration.getString("template.act.source");
     String actTargetPath = processFilePath(configuration.getString("template.act.target"), vh);
+    new File(actTargetPath).mkdirs();
     try {
       YARGTemplateProcessor tt = new YARGTemplateProcessor(actTemplate, Paths.get(actTemplate).getFileName().toString
           ());

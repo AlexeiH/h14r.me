@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.List;
+import java.util.Collection;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
@@ -27,7 +27,7 @@ public class XLSWorkLogDataProviderTest {
 		assertNotNull(inputStream);
 		
 		IWorkLogDataProvider xlsDataProvider = new XLSWorkLogDataProvider(configuration, inputStream);
-		List<WorkLogEntry> workLogs = xlsDataProvider.getWorkLogs();
+		Collection<WorkLogEntry> workLogs = xlsDataProvider.getWorkLogs();
 		assertNotNull(workLogs);
 		
 		assertSame(RECORDS_COUNT, workLogs.size());
